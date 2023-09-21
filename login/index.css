@@ -30,18 +30,18 @@ body {
   margin: 0 20px;
   padding: 70px 30px 44px;
   border-radius: 1.25rem;
-  background: #fff;
   text-align: center;
 }
 
 .container > h2 {
+  color: #ffff;
   font-size: 36px;
   font-weight: 600;
   margin: 0 12px;
 }
 
 .container > h3 {
-  color: rgba(0, 0, 0, 0.38);
+  color: #ffff;
   margin: 0 0 30px;
   font-weight: 500;
   font-size: 1rem;
@@ -61,16 +61,29 @@ body {
 }
 
 .login-form > input {
-  border: 2px solid #ebebeb;
+  border: none;
+  border-bottom: 2px solid #1a51aa;
+  background: transparent;
   font-family: inherit;
   font-size: 15px;
   padding: 0 16px;
-  border-radius: 1.25rem;
   transition: all 0.375s;
 }
 
+.login-form > input::placeholder {
+  color: #ffff;
+}
+
+.login-form > input:focus {
+  outline: none;
+  box-shadow: 0 0 0 0;
+  border: none;
+  color: #ffff;
+}
+
 .login-form > input:hover {
-  border: 2px solid #10449a;
+  border: none;
+  border-bottom: 2px solid #00eeff;
 }
 
 .login-form > button {
@@ -88,11 +101,11 @@ body {
   transition: all 0.375s;
 }
 .login-form > button:hover {
-  background-color: #10449a;
+  background-color: #00eeff;
 }
 
 .login-form > a {
-  color: #2168db;
+  color: #12a5af;
   font-size: 0.9rem;
   text-align: left;
   text-decoration: none;
@@ -101,7 +114,7 @@ body {
 }
 
 .login-form > a:hover {
-  color: #10449a;
+  color: #00eeff;
 }
 
 @keyframes rotate {
