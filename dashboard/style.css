@@ -1,11 +1,17 @@
 @import url("https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap");
 
 * {
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: "Ubuntu";
   box-sizing: border-box;
   margin: 0;
   padding: 0;
   text-decoration: none;
+}
+
+html,
+body,
+.wrapper {
+  height: 100%;
 }
 
 body {
@@ -38,6 +44,12 @@ body {
 
 .button-header {
   font-size: 20px;
+  font-weight: 400;
+}
+
+.button-header-home > a {
+  font-size: 20px;
+  color: rgb(34, 115, 126);
   font-weight: 400;
 }
 
@@ -91,7 +103,6 @@ a:hover {
   height: 12%;
   border: none;
   border-bottom: 2px solid rgb(34, 115, 126);
-  font-family: inherit;
   font-size: 20px;
   padding: 0 29px;
   color: #ffff;
