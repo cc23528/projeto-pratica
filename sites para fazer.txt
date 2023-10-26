@@ -1,0 +1,58 @@
+fazer sites:
+
+
+fazendo/feito=
+
+-fornecer: 
+    id_fornecedor
+    nome_fornecedor
+    endereco
+    telefone
+    email
+
+
+não feito=
+
+
+-condutor msm coisa
+    cpf_condutor
+    id_carteira
+    nome_condutor
+    nacionalidade_condutor
+
+-veiculo msm coisa
+    placa
+    condutor
+    capacidade
+    medida
+    cpf_condutor
+
+-funcionario
+    cpf_funcionario
+    nome_funcionario
+    cargo
+    nacionalidade_funcionario
+
+cliente
+    cpf_cliente
+    nome_cliente
+    telefone_cliente
+    email_cliente
+    endereco_cliente
+    nome_estabelecimento
+
+pedido
+    id_pedido
+    dia
+    situacao
+    id_produto
+    placacpf_funcionario
+    cpf_cliente
+    dia_retirada_entrega
+
+produtos
+    id_produtonome
+    descricao
+    preco
+    quantidade
+    id_fornecedor

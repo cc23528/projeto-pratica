@@ -1,0 +1,83 @@
+@import url("https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap");
+
+* {
+  font-family: "Ubuntu";
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  text-decoration: none;
+}
+
+html,
+body,
+.wrapper {
+  height: 100%;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-image: url("img/background.jpg");
+  background-repeat: no repeat;
+  animation: rotate 15s infinite alternate linear;
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  height: 100vh;
+}
+
+.header {
+  margin-top: 20px;
+  width: 50%;
+  height: 10vh;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  border-bottom: 2px solid rgb(34, 115, 126);
+}
+
+.button-header {
+  font-size: 20px;
+  font-weight: 400;
+}
+
+.button-header-dashboard {
+  font-size: 20px;
+  font-weight: 400;
+}
+
+.button-header-dashboard > a {
+  font-size: 20px;
+  color: rgb(34, 115, 126);
+  font-weight: 400;
+}
+
+.button-header-exit {
+  font-size: 20px;
+  font-weight: 400;
+}
+
+.button-header-exit > a {
+  color: rgb(255, 135, 135);
+  transition: all 1s;
+}
+
+.button-header-exit > a:hover {
+  color: rgb(255, 0, 0);
+  font-weight: 400;
+}
+
+a {
+  color: rgb(255, 255, 255);
+  transition: all 1s;
+}
+
+a:hover {
+  font-weight: 400;
+  color: rgb(0, 255, 255);
+}
