@@ -1,0 +1,30 @@
+<h2>lista de funcionarios: </h2>
+<hr>
+<a href="/admin/funcionario/add">
+    <button class="btn btn-success">Novo Funcionario</button>
+</a>
+
+{{#each funcionario}}
+    <div class="card mt-4">
+        <div class="card-body">
+            <h4>{{nome}}</h4>
+            <small>Nome do Funcionario: {{nome}}</small>
+            <br>
+            <small>Cpf : {{cpf}}</small>
+            <br>
+            <small>Cargo : {{cargo}}</small>
+            <br>
+            <small>data de Nascimento: {{datanascimento}}</small>
+            <br>
+            <small>Data de criação: {{date}}</small>
+            <br>
+            <a href="/admin/funcionario/edit/{{_id}}"><button class="btn btn-success mt-4">Editar funcionario</button></a>
+            <form action="/admin/funcionario/deletar" method="POST">
+                <input type="hidden" name="id" value="{{_id}}">
+                <button type="submit" class="btn btn-danger mt-3">Deletar categoria</button>
+            </form>
+        </div>
+    </div>
+{{else}}
+    <h4 class="mt-4">Nenhuma Funcionario registrado</h4>
+{{/each}}

@@ -1,0 +1,27 @@
+    {{#each erros}}
+        <div class="alert alert-danger">{{texto}}</div>
+    {{else}}
+
+    {{/each}}
+    
+    <h3>Novo Funcionario: </h3>
+    <div class="card">
+        <div class="card-body">
+            <form action="/admin/funcionario/novo" method="POST">
+                <label for="nome">Nome: </label>
+                <input type="text" name="nome" id="nome" placeholder="nome do funcioarnio" class="form-control">
+
+                <label for="cpf">Cpf: </label>
+                <input type="text" name="cpf" id="cpf" placeholder="cpf do funcionario" class="form-control">
+
+                <label for="cargo">cargo: </label>
+                <input type="text" name="cargo" id="cargo" placeholder="cargo da categoria" class="form-control">
+
+                <label for="datanascimento">data de Nascimento: </label>
+                <input type="date" name="datanascimento" id="datanascimento" placeholder="Data de Nascimento" class="form-control">
+
+                <button type="submit" class="btn btn-success mt-4">Adicionar Funcionario</button>
+            </form>
+        </div>
+    </div>
+    
