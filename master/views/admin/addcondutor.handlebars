@@ -1,0 +1,30 @@
+    {{#each erros}}
+        <div class="alert alert-danger">{{texto}}</div>
+    {{else}}
+
+    {{/each}}
+    
+    <h3>Novo Condutor: </h3>
+    <div class="card">
+        <div class="card-body">
+            <form action="/admin/condutor/novo" method="POST">
+                <label for="nome_condutor">Nome: </label>
+                <input type="text" name="nome_condutor" id="nome_condutor" placeholder="nome do condutor" class="form-control">
+
+                <label for="cpf_condutor">Cpf: </label>
+                <input type="text" name="cpf_condutor" id="cpf_condutor" placeholder="cpf do condutor" class="form-control">
+
+                <label for="carteira">Categoria Carteira: </label>
+                <input type="text" name="carteira" id="carteira" placeholder="cargo da categoria" class="form-control">
+
+                <label for="nacionalidade_condutor">Nacionalidade: </label>
+                <input type="text" name="nacionalidade_condutor" id="nacionalidade_condutor" placeholder="cargo da categoria" class="form-control">
+
+                <label for="nascimento_condutor">data de Nascimento: </label>
+                <input type="date" name="nascimento_condutor" id="nascimento_condutor" placeholder="Data de Nascimento" class="form-control">
+
+                <button type="submit" class="btn btn-success mt-4">Adicionar Condutor</button>
+            </form>
+        </div>
+    </div>
+    
