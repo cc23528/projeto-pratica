@@ -6,9 +6,14 @@ package javaapplication1;
 
 import java.awt.Image;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.sql.PreparedStatement;
+import java.text.SimpleDateFormat;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
@@ -56,20 +61,19 @@ public class Main_Window extends javax.swing.JFrame {
             ||  txt_bebida.getText() == null
             ||  txt_tipo.getText() == null
             ||  txt_quantidade.getText() == null
-            ||  txt_preço.getText() == null
-            ||  txt_AdicionarData == null
+            ||  txt_preco.getText() == null
+            ||  txt_data.getDate() == null
             ){
                 return false;
         }else{
                 try{
-                    Float.parseFloat(txt_preço.getText());
+                    Float.valueOf(txt_preco.getText());
                     return true;
-                }catch(Exception ex)
+                }catch(NumberFormatException ex)
                 {
-                    
+                    return false;
                 }
-                
-                }
+        }
         
     }
             
@@ -112,7 +116,7 @@ public class Main_Window extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
-        txt_AdicionarData = new com.toedter.calendar.JDateChooser();
+        txt_data = new com.toedter.calendar.JDateChooser();
         bl_image = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
@@ -130,7 +134,7 @@ public class Main_Window extends javax.swing.JFrame {
         txt_id = new javax.swing.JTextField();
         txt_bebida = new javax.swing.JTextField();
         txt_tipo = new javax.swing.JTextField();
-        txt_preço = new javax.swing.JTextField();
+        txt_preco = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -301,11 +305,11 @@ public class Main_Window extends javax.swing.JFrame {
             }
         });
 
-        txt_preço.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        txt_preço.setPreferredSize(new java.awt.Dimension(59, 50));
-        txt_preço.addActionListener(new java.awt.event.ActionListener() {
+        txt_preco.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        txt_preco.setPreferredSize(new java.awt.Dimension(59, 50));
+        txt_preco.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txt_preçoActionPerformed(evt);
+                txt_precoActionPerformed(evt);
             }
         });
 
@@ -363,9 +367,9 @@ public class Main_Window extends javax.swing.JFrame {
                             .addComponent(txt_tipo, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(txt_quantidade, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(txt_id, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txt_preço, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txt_preco, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(bl_image, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txt_AdicionarData, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(txt_data, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 129, Short.MAX_VALUE)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 599, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(165, 165, 165))))
@@ -394,10 +398,10 @@ public class Main_Window extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel3)
-                            .addComponent(txt_preço, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(txt_preco, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(29, 29, 29)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txt_AdicionarData, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txt_data, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel4))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -480,9 +484,9 @@ public class Main_Window extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_txt_tipoActionPerformed
 
-    private void txt_preçoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_preçoActionPerformed
+    private void txt_precoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_precoActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_txt_preçoActionPerformed
+    }//GEN-LAST:event_txt_precoActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         
@@ -497,6 +501,7 @@ public class Main_Window extends javax.swing.JFrame {
             File selectedFile = file.getSelectedFile();
             String path = selectedFile.getAbsolutePath();
             bl_image.setIcon(ResizeImage(path, null));
+            ImgPath = path;
         } else{
             System.out.println("Nenhum arquivo foi selecionado");
         }  
@@ -504,7 +509,39 @@ public class Main_Window extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void Btn_inserirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Btn_inserirActionPerformed
-        // TODO add your handling code here:
+        
+        if(checkInputs() && ImgPath != null)
+        {
+            
+            try{
+                Connection con = getConnection();
+                PreparedStatement ps = (PreparedStatement) con.prepareStatement("INSERT INTO tabeladetest(id_bebida, nome_bebida, tipo_bebida, quantidade_bebida, preco_bebida, data_bebida, imagem_bebida)" 
+                        + "values(?,?,?,?,?,?,?)");
+                ps.setString(1, txt_id.getText());
+                 ps.setString(2, txt_bebida.getText()) ;
+                 ps.setString(3, txt_tipo.getText());
+                 ps.setString(4, txt_quantidade.getText());
+                 ps.setString(5, txt_preco.getText());
+                 
+                 SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+                 String addDate = dateFormat.format(txt_data.getDate());
+                 ps.setString(6, addDate);
+                 
+                 InputStream img = new FileInputStream(new File(ImgPath));
+                 ps.setBlob(7, img);
+                 ps.executeUpdate();
+                 JOptionPane.showMessageDialog(null, "Dados salvos com sucesso");  
+                 
+            } catch (SQLException ex) {
+                JOptionPane.showMessageDialog(null, ex.getMessage());
+            } catch (FileNotFoundException ex) {
+                Logger.getLogger(Main_Window.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+        }else{
+            JOptionPane.showMessageDialog(null, "Um ou mais campos estão faltando");
+        }
+        
     }//GEN-LAST:event_Btn_inserirActionPerformed
 
     /**
@@ -562,10 +599,10 @@ public class Main_Window extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
-    private com.toedter.calendar.JDateChooser txt_AdicionarData;
     private javax.swing.JTextField txt_bebida;
+    private com.toedter.calendar.JDateChooser txt_data;
     private javax.swing.JTextField txt_id;
-    private javax.swing.JTextField txt_preço;
+    private javax.swing.JTextField txt_preco;
     private javax.swing.JTextField txt_quantidade;
     private javax.swing.JTextField txt_tipo;
     // End of variables declaration//GEN-END:variables
