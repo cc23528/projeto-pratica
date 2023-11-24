@@ -13,14 +13,12 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.PreparedStatement;
-import java.text.SimpleDateFormat;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import com.toedter.calendar.JDateChooser;
 
 
 /**
@@ -43,7 +41,7 @@ public class Main_Window extends javax.swing.JFrame {
         Connection con;
         
         try {
-            con = DriverManager.getConnection("jdbc:mysql://regulus.cotuca.unicamp.br:3306","BD23517","BD23517");
+            con = DriverManager.getConnection("jdbc:mysql://regulus.cotuca.unicamp.br:3306/BD23517","BD23517","BD23517");
             JOptionPane.showMessageDialog(null, "Connected"); 
             initComponents();
             return con;
@@ -57,20 +55,18 @@ public class Main_Window extends javax.swing.JFrame {
     // Check Input fields
     public boolean checkInputs()
     {
-        if(
-            txt_id.getText() == null
+        if(txt_id.getText() == null
             ||  txt_bebida.getText() == null
             ||  txt_tipo.getText() == null
             ||  txt_quantidade.getText() == null
             ||  txt_preco.getText() == null
-            ||  txt_data.getDate() == null
             ){
                 return false;
         }else{
                 try{
-                    Float.valueOf(txt_preco.getText());
+                    Float.parseFloat(txt_preco.getText());
                     return true;
-                }catch(NumberFormatException ex)
+                }catch(Exception ex)
                 {
                     return false;
                 }
@@ -115,9 +111,7 @@ public class Main_Window extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
-        txt_data = new com.toedter.calendar.JDateChooser();
         bl_image = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
@@ -149,9 +143,6 @@ public class Main_Window extends javax.swing.JFrame {
 
         jLabel3.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel3.setText("Preço:");
-
-        jLabel4.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabel4.setText("Adicionar Data:");
 
         jLabel5.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel5.setText("Imagem:");
@@ -334,16 +325,12 @@ public class Main_Window extends javax.swing.JFrame {
                             .addComponent(jLabel2)
                             .addComponent(jLabel8)
                             .addComponent(jLabel3)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jLabel5)
-                                .addGap(19, 19, 19)))
+                            .addComponent(jLabel5))
                         .addGap(5, 5, 5))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addGap(105, 105, 105)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(Btn_inserir, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel4))
-                        .addGap(18, 18, 18)))
+                        .addComponent(Btn_inserir, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(57, 57, 57)))
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -369,8 +356,7 @@ public class Main_Window extends javax.swing.JFrame {
                             .addComponent(txt_quantidade, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(txt_id, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(txt_preco, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(bl_image, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txt_data, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(bl_image, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 129, Short.MAX_VALUE)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 599, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(165, 165, 165))))
@@ -400,14 +386,11 @@ public class Main_Window extends javax.swing.JFrame {
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel3)
                             .addComponent(txt_preco, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(29, 29, 29)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txt_data, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel4))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel5)
-                            .addComponent(bl_image, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel5)
+                        .addGap(7, 7, 7)
+                        .addComponent(bl_image, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(16, 16, 16))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(32, 32, 32)
                         .addComponent(jScrollPane1)))
@@ -511,38 +494,32 @@ public class Main_Window extends javax.swing.JFrame {
 
     private void Btn_inserirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Btn_inserirActionPerformed
         
-        if(checkInputs() && ImgPath != null)
-        {
-            
-            try{
-                Connection con = getConnection();
-                PreparedStatement ps = (PreparedStatement) con.prepareStatement("INSERT INTO tabeladetest(id_bebida, nome_bebida, tipo_bebida, quantidade_bebida, preco_bebida, data_bebida, imagem_bebida)" 
-                        + "values(?,?,?,?,?,?,?)");
-                ps.setString(1, txt_id.getText());
-                 ps.setString(2, txt_bebida.getText()) ;
-                 ps.setString(3, txt_tipo.getText());
-                 ps.setString(4, txt_quantidade.getText());
-                 ps.setString(5, txt_preco.getText());
-                 
-                 SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
-                 String addDate = dateFormat.format(txt_data.getDate());
-                 ps.setString(6, addDate);
-                 
-                 InputStream img = new FileInputStream(new File(ImgPath));
-                 ps.setBlob(7, img);
-                 ps.executeUpdate();
-                 JOptionPane.showMessageDialog(null, "Dados salvos com sucesso");  
-                 
-            } catch (SQLException ex) {
-                JOptionPane.showMessageDialog(null, ex.getMessage());
-            } catch (FileNotFoundException ex) {
-                Logger.getLogger(Main_Window.class.getName()).log(Level.SEVERE, null, ex);
+                    if (!txt_id.getText().isEmpty() && !txt_bebida.getText().isEmpty() && !txt_tipo.getText().isEmpty() && !txt_quantidade.getText().isEmpty() && !txt_preco.getText().isEmpty()) {
+                try {
+                    Connection con = getConnection();
+                    PreparedStatement ps = con.prepareStatement("INSERT INTO tabeladetest(id_bebida, nome_bebida, tipo_bebida, quantidade_bebida, preco_bebida, imagem_bebida) VALUES (?, ?, ?, ?, ?, ?)");
+
+                    // Assuming id_bebida is an integer field
+                    ps.setInt(1, Integer.parseInt(txt_id.getText()));
+                    ps.setString(2, txt_bebida.getText());
+                    ps.setString(3, txt_tipo.getText());
+                    ps.setInt(4, Integer.parseInt(txt_quantidade.getText()));
+                    ps.setString(5,(txt_preco.getText()));
+
+                    InputStream img = new FileInputStream(new File(ImgPath));
+                    ps.setBlob(6, img);
+
+                    ps.executeUpdate();
+
+                    JOptionPane.showMessageDialog(null, "Data Inserted Successfully");
+                } catch (SQLException | FileNotFoundException ex) {
+                    Logger.getLogger(Main_Window.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(null, "Please enter valid numeric values for numeric fields.");
+                }
+            } else {
+                JOptionPane.showMessageDialog(null, "All fields are required.");
             }
-            
-        }else{
-            JOptionPane.showMessageDialog(null, "Um ou mais campos estão faltando");
-        }
-        
     }//GEN-LAST:event_Btn_inserirActionPerformed
 
     /**
@@ -593,7 +570,6 @@ public class Main_Window extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
@@ -601,7 +577,6 @@ public class Main_Window extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
     private javax.swing.JTextField txt_bebida;
-    private com.toedter.calendar.JDateChooser txt_data;
     private javax.swing.JTextField txt_id;
     private javax.swing.JTextField txt_preco;
     private javax.swing.JTextField txt_quantidade;
