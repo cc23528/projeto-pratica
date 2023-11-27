@@ -4,6 +4,7 @@
  */
 package javaapplication1;
 
+import java.awt.HeadlessException;
 import java.awt.Image;
 import java.io.File;
 import java.io.FileInputStream;
@@ -32,6 +33,7 @@ public class Main_Window extends javax.swing.JFrame {
      */
     public Main_Window() {
         getConnection();
+        initComponents();
     }
     
     String ImgPath = null;
@@ -42,8 +44,7 @@ public class Main_Window extends javax.swing.JFrame {
         
         try {
             con = DriverManager.getConnection("jdbc:mysql://regulus.cotuca.unicamp.br:3306/BD23517","BD23517","BD23517");
-            JOptionPane.showMessageDialog(null, "Connected"); 
-            initComponents();
+            JOptionPane.showMessageDialog(null, "Connected");             
             return con;
         } catch (SQLException ex) {
             Logger.getLogger(Main_Window.class.getName()).log(Level.SEVERE, null, ex); 
@@ -494,32 +495,27 @@ public class Main_Window extends javax.swing.JFrame {
 
     private void Btn_inserirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Btn_inserirActionPerformed
         
-                    if (!txt_id.getText().isEmpty() && !txt_bebida.getText().isEmpty() && !txt_tipo.getText().isEmpty() && !txt_quantidade.getText().isEmpty() && !txt_preco.getText().isEmpty()) {
-                try {
-                    Connection con = getConnection();
-                    PreparedStatement ps = con.prepareStatement("INSERT INTO tabeladetest(id_bebida, nome_bebida, tipo_bebida, quantidade_bebida, preco_bebida, imagem_bebida) VALUES (?, ?, ?, ?, ?, ?)");
-
-                    // Assuming id_bebida is an integer field
-                    ps.setInt(1, Integer.parseInt(txt_id.getText()));
-                    ps.setString(2, txt_bebida.getText());
-                    ps.setString(3, txt_tipo.getText());
-                    ps.setInt(4, Integer.parseInt(txt_quantidade.getText()));
-                    ps.setString(5,(txt_preco.getText()));
-
-                    InputStream img = new FileInputStream(new File(ImgPath));
-                    ps.setBlob(6, img);
-
-                    ps.executeUpdate();
-
-                    JOptionPane.showMessageDialog(null, "Data Inserted Successfully");
-                } catch (SQLException | FileNotFoundException ex) {
-                    Logger.getLogger(Main_Window.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (NumberFormatException ex) {
-                    JOptionPane.showMessageDialog(null, "Please enter valid numeric values for numeric fields.");
-                }
-            } else {
-                JOptionPane.showMessageDialog(null, "All fields are required.");
+        if(checkInputs() && ImgPath != null){
+            try {
+                Connection con = getConnection();
+                System.out.println("Test");
+                PreparedStatement ps = con.prepareStatement("INSERT INTO tabeladetest(id_bebida,nome_bebida,tipo_bebida,quantidade_bebida,preco_bebida,imagem_bebida) VALUES(?,?,?,?,?,?)");
+                ps.setString(1, txt_id.getText());
+                ps.setString(2, txt_bebida.getText());
+                ps.setString(3, txt_tipo.getText());
+                ps.setString(4, txt_quantidade.getText());
+                ps.setString(5, txt_preco.getText());
+                
+                InputStream img = new FileInputStream(new File(ImgPath));
+                ps.setBlob(6, img);
+                ps.executeUpdate();
+                JOptionPane.showMessageDialog(null, "Dados Salvos");
+            } catch (HeadlessException | FileNotFoundException | SQLException ex) {
+                JOptionPane.showMessageDialog(null, ex.getMessage());
             }
+        }else{
+            JOptionPane.showMessageDialog(null, "Preencha todos os campos");
+        }
     }//GEN-LAST:event_Btn_inserirActionPerformed
 
     /**
