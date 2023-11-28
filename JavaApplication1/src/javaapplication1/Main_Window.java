@@ -4,22 +4,26 @@
  */
 package javaapplication1;
 
+import com.mysql.cj.xdevapi.Statement;
 import java.awt.HeadlessException;
 import java.awt.Image;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.sql.ResultSet;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.PreparedStatement;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.table.DefaultTableModel;
 
 
 /**
@@ -33,7 +37,8 @@ public class Main_Window extends javax.swing.JFrame {
      */
     public Main_Window() {
         getConnection();
-        initComponents();
+        initComponents(); 
+        Show_Products_In_JTable();
     }
     
     String ImgPath = null;
@@ -43,12 +48,10 @@ public class Main_Window extends javax.swing.JFrame {
         Connection con;
         
         try {
-            con = DriverManager.getConnection("jdbc:mysql://regulus.cotuca.unicamp.br:3306/BD23517","BD23517","BD23517");
-            JOptionPane.showMessageDialog(null, "Connected");             
+            con = DriverManager.getConnection("jdbc:mysql://regulus.cotuca.unicamp.br:3306/BD23517","BD23517","BD23517");          
             return con;
         } catch (SQLException ex) {
             Logger.getLogger(Main_Window.class.getName()).log(Level.SEVERE, null, ex); 
-            JOptionPane.showMessageDialog(null, "Not Connected: " + ex.getMessage()); 
             return null;
         }
     }
@@ -96,6 +99,56 @@ public class Main_Window extends javax.swing.JFrame {
         return image;
     }
     
+    // Display Data in JTable: 
+        //      1 - Fill ArrayList With The Data
+            public ArrayList<Product> getProductList()
+            {
+                ArrayList<Product> productList = new ArrayList<Product>();
+                Connection con = getConnection();
+                String query = "SELECT * FROM tabeladetest";
+                
+                ResultSet rs = null;
+                Statement st = null;
+            
+                try{
+                    st = (Statement) con.createStatement();
+                    rs.executeQuery();
+                    Product product;
+                    
+                    while(rs.next())
+                    {
+                        product = new Product(rs.getInt("id_bebida"),rs.getString("nome_bebida"),rs.getString("tipo_bebida"),rs.getInt("quantidade_bebida"),
+                                Float.parseFloat(rs.getString("preco_bebida")), rs.getBytes("imagem_bebida"));
+                        productList.add(product);
+                    }
+                    
+                } catch (SQLException ex) {
+                    Logger.getLogger(Main_Window.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                
+                return productList;
+            }
+    
+        //      2 - Populate The JTable
+            
+            private void Show_Products_In_JTable()
+            {
+                ArrayList<Product> list = getProductList();
+                DefaultTableModel model = (DefaultTableModel)JTable_Products.getModel();
+                
+                Object[] row = new Object[4];
+                for(int i = 0; i < list.size(); i++)
+                {
+                    row[0] = list.get(i).getId();
+                    row[2] = list.get(i).getName();
+                    row[3] = list.get(i).getType();
+                    row[4] = list.get(i).getQuantity();
+                    row[5] = list.get(i).getPrice();
+                    row[6] = list.get(i).getImage();
+                    
+                    model.addRow(row);
+                }                
+            }
         
     
     
@@ -115,7 +168,7 @@ public class Main_Window extends javax.swing.JFrame {
         jLabel5 = new javax.swing.JLabel();
         bl_image = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        JTable_Products = new javax.swing.JTable();
         jLabel7 = new javax.swing.JLabel();
         txt_quantidade = new javax.swing.JTextField();
         jLabel8 = new javax.swing.JLabel();
@@ -151,15 +204,15 @@ public class Main_Window extends javax.swing.JFrame {
         bl_image.setBackground(new java.awt.Color(0, 153, 255));
         bl_image.setOpaque(true);
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        JTable_Products.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "ID", "Bebida", "Preço", "Tipo", "Quantidade", "Data"
+                "ID", "Bebida", "Tipo", "Quantidade", "Preço"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(JTable_Products);
 
         jLabel7.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel7.setText("Tipo:");
@@ -438,11 +491,85 @@ public class Main_Window extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void Btn_atualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Btn_atualizarActionPerformed
-        // TODO add your handling code here:
+        
+        if (checkInputs() && txt_id.getText() != null)
+        {
+            String UpdateQuery = null;
+            PreparedStatement ps = null;
+            Connection con = getConnection();
+            
+            // update without image
+            if(ImgPath == null)
+            {
+                try {
+                    UpdateQuery = "UPDATE tabeladetest SET nome_bebida = ?, tipo_bebida = ?,"
+                            + " quantidade_bebida = ?, preco_bebida = ? WHERE id_bebida = ?";
+                    ps = con.prepareStatement(UpdateQuery);
+                    ps.setString(1, txt_bebida.getText());
+                    ps.setString(2, txt_tipo.getText());
+                    ps.setString(3, txt_quantidade.getText());
+                    ps.setString(4, txt_preco.getText());
+                    
+                    ps.setInt(5, Integer.parseInt(txt_id.getText()));
+                    
+                    ps.executeUpdate();
+                } catch (Exception ex) {
+                    Logger.getLogger(Main_Window.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            else{
+                
+                try {
+                InputStream img = new FileInputStream(new File(ImgPath));
+                    
+                    UpdateQuery = "UPDATE tabeladetest SET nome_bebida = ?, tipo_bebida = ?,"
+                            + " quantidade_bebida = ?, preco_bebida = ?, imagem_bebida = ? WHERE id_bebida = ?";
+                    ps = con.prepareStatement(UpdateQuery);
+                    ps.setString(1, txt_bebida.getText());
+                    ps.setString(2, txt_tipo.getText());
+                    ps.setString(3, txt_quantidade.getText());
+                    ps.setString(4, txt_preco.getText());
+                    
+                    ps.setBlob(5, img);
+                    
+                    ps.setInt(6, Integer.parseInt(txt_id.getText()));
+                    
+                    ps.executeUpdate();
+                } catch (Exception ex) 
+                {
+                    JOptionPane.showMessageDialog(null, ex.getMessage());
+                }                           
+            }
+            // update With Image
+            
+        }
+        else
+        {
+            JOptionPane.showMessageDialog(null, "Preencha todos os campos");
+        }
+        
     }//GEN-LAST:event_Btn_atualizarActionPerformed
 
     private void Btn_deletarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Btn_deletarActionPerformed
-        // TODO add your handling code here:
+        if(!txt_id.getText().equals(""))
+        {
+            try {
+                Connection con = getConnection();
+                PreparedStatement ps;
+                ps = con.prepareStatement("DELETE FROM tabeladetest WHERE id_bebida = ?");
+                int id = Integer.parseInt(txt_id.getText());
+                ps.setInt(1, id);
+                ps.executeUpdate();
+                JOptionPane.showMessageDialog(null, "Produto Deletado com Sucesso");
+            } catch (SQLException ex) {
+                Logger.getLogger(Main_Window.class.getName()).log(Level.SEVERE, null, ex);
+                JOptionPane.showMessageDialog(null, "O produto não foi deletado");
+            }
+        }
+        else
+        {
+            JOptionPane.showMessageDialog(null, "O produto não foi deletado : Nenhum ID selecionado");
+        }
     }//GEN-LAST:event_Btn_deletarActionPerformed
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
@@ -509,7 +636,9 @@ public class Main_Window extends javax.swing.JFrame {
                 InputStream img = new FileInputStream(new File(ImgPath));
                 ps.setBlob(6, img);
                 ps.executeUpdate();
-                JOptionPane.showMessageDialog(null, "Dados Salvos");
+                Show_Products_In_JTable();
+                
+                JOptionPane.showMessageDialog(null, "Dados Inseridos");
             } catch (HeadlessException | FileNotFoundException | SQLException ex) {
                 JOptionPane.showMessageDialog(null, ex.getMessage());
             }
@@ -557,6 +686,7 @@ public class Main_Window extends javax.swing.JFrame {
     private javax.swing.JButton Btn_atualizar;
     private javax.swing.JButton Btn_deletar;
     private javax.swing.JButton Btn_inserir;
+    private javax.swing.JTable JTable_Products;
     private javax.swing.JLabel bl_image;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
@@ -571,7 +701,6 @@ public class Main_Window extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel8;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
     private javax.swing.JTextField txt_bebida;
     private javax.swing.JTextField txt_id;
     private javax.swing.JTextField txt_preco;
