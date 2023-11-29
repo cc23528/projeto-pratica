@@ -1,0 +1,30 @@
+<h2>Lista de Condutores:</h2>
+<hr>
+<a href="/admin/condutor/add">
+    <button class="btn btn-success">Novo Condutor</button>
+</a>
+
+{{#each condutor}}
+    <div class="card mt-4">
+        <div class="card-body">
+            <h4>{{nome_condutor}}</h4>
+            <small>Cpf: {{cpf_condutor}}</small>
+            <br>
+            <small>Carteira: {{carteira}}</small>
+            <br>
+            <small>Nacionalidade: {{nacionalidade_condutor}}</small>
+            <br>
+            <small>Data de Nascimento: {{nascimento_condutor}}</small>
+            <br>
+            <small>Data de Criação: {{date}}</small>
+            <br>
+            <a href="/admin/condutor/edit/{{id}}"><button class="btn btn-success mt-4">Editar Condutor</button></a>
+            <form action="/admin/condutor/deletar" method="POST">
+                <input type="hidden" name="id" value="{{id}}">
+                <button type="submit" class="btn btn-danger mt-3">Deletar Condutor</button>
+            </form>
+        </div>
+    </div>
+{{else}}
+    <h4 class="mt-4">Nenhum Condutor Registrado</h4>
+{{/each}}

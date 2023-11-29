@@ -1,0 +1,80 @@
+    {{#each erros}}
+        <div class="alert alert-danger">{{texto}}</div>
+    {{else}}
+
+    {{/each}}
+    
+    <h3>Novo Veiculo: </h3>
+    <div class="card">
+        <div class="card-body">
+            <form action="/admin/veiculo/edit" method="POST">
+            <input type="hidden" name="id" value="{{veiculo.id}}">
+                
+
+                <label for="placa">Placa: </label>
+                <input type="text" name="placa" id="placa" placeholder="Placa do carro" class="form-control" value="{{veiculo.placa}}">
+
+                <label for="condutor">Condutor: </label>
+                <select name="condutor" id="condutor" class="form-control" onchange="updateCPF()">
+                    <option value="">Selecione um condutor</option>
+                    {{#each condutor}}
+                        <option value="{{cpf_condutor}}">{{nome_condutor}}</option>
+                    {{/each}}
+                </select>
+
+                <label for="cpf">CPF do Condutor: </label>
+                <input type="text" name="cpf" id="cpf" class="form-control" value="{{veiculo.cpf}}" readonly>
+
+                <label for="medida">medida: </label>
+                <input type="text" name="medida" id="medida" placeholder="medida do carro" class="form-control" value="{{veiculo.medida}}">
+
+
+
+                <button type="submit" class="btn btn-success mt-4">Edita Veiculo</button>
+            </form>
+            <a href="/admin/condutor">
+                <button class="btn btn-success mt-4">Ver Condutores</button>
+            </a>
+        </div>
+    </div>
+
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+            <th scope="col">#</th>
+            <th scope="col">Nome</th>
+            <th scope="col">Cpf</th>
+            <th scope="col">Carteira</th>
+            <th scope="col">Nacionalidade</th>
+            <th scope="col">Data de Nascimento</th>
+            <th scope="col">Data de criação</th>
+            </tr>
+    </thead>
+
+    <tbody>
+        {{#each condutor}}
+            <tr>
+                <th scope="row">{{@index}}</th>
+                <td>{{nome_condutor}}</td>
+                <td>{{cpf_condutor}}</td>
+                <td>{{carteira}}</td>
+                <td>{{nacionalidade_condutor}}</td>
+                <td>{{nascimento_condutor}}</td>
+                <td>{{date}}</td>
+            </tr>
+        {{else}}
+            <h4 class="mt-4">Nenhum Condutor registrado</h4>
+        {{/each}}
+    </tbody>
+
+<script>
+function updateCPF() {
+    var selectCondutor = document.getElementById("condutor");
+    var selectedCPF = selectCondutor.options[selectCondutor.selectedIndex].value;
+
+    // Atualiza o campo "cpf" com o CPF correspondente
+    document.getElementById("cpf").value = selectedCPF;
+}
+
+</script>

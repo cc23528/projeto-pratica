@@ -1,0 +1,26 @@
+<h2>lista de Veiculos: </h2>
+<hr>
+<a href="/admin/veiculo/add">
+    <button class="btn btn-success">Novo Veiculo</button>
+</a>
+
+{{#each veiculo}}
+    <div class="card mt-4">
+        <div class="card-body">
+            <h4>Placa: {{placa}}</h4>
+            <small>Condutor : {{nome_condutor}}</small>
+            <br>
+            <small>CPF do condutor : {{cpf}}</small>
+            <br>
+            <small>Medida: {{medida}}</small>
+            <br>
+            <a href="/admin/veiculo/edit/{{id}}"><button class="btn btn-success mt-4">Editar Veiculo</button></a>
+            <form action="/admin/veiculo/deletar" method="POST">
+                <input type="hidden" name="id" value="{{id}}">
+                <button type="submit" class="btn btn-danger mt-3">Veiculo Condutor</button>
+            </form>
+        </div>
+    </div>
+{{else}}
+    <h4 class="mt-4">Nenhum Condutor registrado</h4>
+{{/each}}

@@ -1,0 +1,43 @@
+<h2>lista de funcionarios: </h2>
+<hr>
+<a href="/admin/funcionario/add">
+    <button class="btn btn-success">Novo Funcionario</button>
+</a>
+
+<div class="card mt-4">
+    <table class="table">
+            <thead class="thead-dark">
+                <tr>
+                <th scope="col">#</th>
+                <th scope="col">Nome</th>
+                <th scope="col">Cpf</th>
+                <th scope="col">Cargo</th>
+                <th scope="col">Data de Nascimento</th>
+                <th scope="col">Data de criação</th>
+                <th scope="col">edit</th>
+                </tr>
+        </thead>
+
+    {{#each funcionario}}
+        <tr>
+            <th scope="row">{{@index}}</th>
+            <td>{{nome}}</td>
+            <td>{{cpf}}</td>
+            <td>{{cargo}}</td>
+            <td>{{datanascimento}}</td>
+            <td>{{date}}</td>
+            <td>
+                <a href="/admin/funcionario/edit/{{id}}"><button class="btn btn-success mt-1">Editar funcionario</button></a>
+                
+                <form action="/admin/funcionario/deletar" method="POST">
+                    <input type="hidden" name="id" value="{{id}}">
+                    <button type="submit" class="btn btn-danger mt-1">Remover funcionario</button>
+                </form>
+            </td>
+            
+        </tr>
+        
+    {{else}}
+        <h4 class="mt-4">Nenhuma Funcionario registrado</h4>
+    {{/each}}
+</div>
