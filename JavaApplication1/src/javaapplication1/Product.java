@@ -4,16 +4,18 @@ public class Product {
     
     private int id;
     private String name;
+    private String type;
+    private int quantity;
     private float price;
-    private String addDate;
     private byte[] picture;
     
-    public Product(int pid, String pname, float pprice, String pAddDate, byte[] pimg)
+    public Product(int pid, String pname, String ptype, int pquantity, float pprice, byte[] pimg)
     {
         this.id = pid;
         this.name = pname;
+        this.type = ptype;
+        this.quantity = pquantity;
         this.price = pprice;
-        this.addDate = pAddDate;
         this.picture = pimg;
     }
     
@@ -27,14 +29,19 @@ public class Product {
         return name;
     }
     
+    public String getType()
+    {
+        return type;
+    }
+    
+    public int getQuantity()
+    {
+        return quantity;
+    }
+    
     public float getPrice()
     {
         return price;
-    }
-    
-    public String getAddDate()
-    {
-        return addDate;
     }
     
     public byte[] getImage()
