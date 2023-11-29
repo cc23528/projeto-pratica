@@ -9,10 +9,12 @@ public class Product {
     private float price;
     private byte[] picture;
     
-    public Product(int pid, String pname, String pAddDate, int aInt1, float pprice, byte[] pimg)
+    public Product(int pid, String pname, String ptype, int pquantity, float pprice, byte[] pimg)
     {
         this.id = pid;
         this.name = pname;
+        this.type = ptype;
+        this.quantity = pquantity;
         this.price = pprice;
         this.picture = pimg;
     }

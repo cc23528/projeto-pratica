@@ -4,7 +4,6 @@
  */
 package javaapplication1;
 
-import com.mysql.cj.xdevapi.Statement;
 import java.awt.HeadlessException;
 import java.awt.Image;
 import java.io.File;
@@ -12,6 +11,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.sql.ResultSet;
+import java.sql.Statement;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -42,7 +42,7 @@ public class Main_Window extends javax.swing.JFrame {
     }
     
     String ImgPath = null;
-    
+    int pos = 0;
     private Connection getConnection()
     {
         Connection con;
@@ -107,18 +107,17 @@ public class Main_Window extends javax.swing.JFrame {
                 Connection con = getConnection();
                 String query = "SELECT * FROM tabeladetest";
                 
-                ResultSet rs = null;
-                Statement st = null;
+                ResultSet rs;
+                Statement st;
             
                 try{
-                    st = (Statement) con.createStatement();
-                    rs.executeQuery();
+                    st = con.createStatement();
+                    rs = st.executeQuery(query);
                     Product product;
                     
                     while(rs.next())
                     {
-                        product = new Product(rs.getInt("id_bebida"),rs.getString("nome_bebida"),rs.getString("tipo_bebida"),rs.getInt("quantidade_bebida"),
-                                Float.parseFloat(rs.getString("preco_bebida")), rs.getBytes("imagem_bebida"));
+                        product = new Product(rs.getInt("id_bebida"),rs.getString("nome_bebida"),rs.getString("tipo_bebida"),rs.getInt("quantidade_bebida"),Float.parseFloat(rs.getString("preco_bebida")), rs.getBytes("imagem_bebida"));
                         productList.add(product);
                     }
                     
@@ -136,18 +135,35 @@ public class Main_Window extends javax.swing.JFrame {
                 ArrayList<Product> list = getProductList();
                 DefaultTableModel model = (DefaultTableModel)JTable_Products.getModel();
                 
-                Object[] row = new Object[4];
+                // clear JTable
+                model.setRowCount(0);
+                Object[] row = new Object[6];
                 for(int i = 0; i < list.size(); i++)
                 {
                     row[0] = list.get(i).getId();
-                    row[2] = list.get(i).getName();
-                    row[3] = list.get(i).getType();
-                    row[4] = list.get(i).getQuantity();
-                    row[5] = list.get(i).getPrice();
-                    row[6] = list.get(i).getImage();
+                    row[1] = list.get(i).getName();
+                    row[2] = list.get(i).getType();
+                    row[3] = list.get(i).getQuantity();
+                    row[4] = list.get(i).getPrice();
+                    row[5] = list.get(i).getImage();
                     
                     model.addRow(row);
                 }                
+            }
+            
+            public void ShowItem(int index)
+            {
+                try{
+                    txt_id.setText(Integer.toString(getProductList().get(index).getId()));
+                    txt_bebida.setText(getProductList().get(index).getName());
+                    txt_tipo.setText(getProductList().get(index).getType());
+                    txt_quantidade.setText(Integer.toString(getProductList().get(index).getQuantity()));
+                    txt_preco.setText(Float.toString(getProductList().get(index).getPrice()));
+                } catch (Exception ex){
+                    Logger.getLogger(Main_Window.class.getName()).log(Level.SEVERE, null, ex); 
+                }
+                
+                bl_image.setIcon(ResizeImage(null, getProductList().get(index).getImage()));
             }
         
     
@@ -173,7 +189,7 @@ public class Main_Window extends javax.swing.JFrame {
         txt_quantidade = new javax.swing.JTextField();
         jLabel8 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        Btn_First = new javax.swing.JButton();
         Btn_inserir = new javax.swing.JButton();
         Btn_atualizar = new javax.swing.JButton();
         Btn_deletar = new javax.swing.JButton();
@@ -211,7 +227,20 @@ public class Main_Window extends javax.swing.JFrame {
             new String [] {
                 "ID", "Bebida", "Tipo", "Quantidade", "Preço"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        JTable_Products.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                JTable_ProductsMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(JTable_Products);
 
         jLabel7.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
@@ -236,16 +265,16 @@ public class Main_Window extends javax.swing.JFrame {
             }
         });
 
-        jButton2.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/javaapplication1/fast-forward-double-left-arrows-symbol.png"))); // NOI18N
-        jButton2.setText("Primeiro");
-        jButton2.setAlignmentY(0.0F);
-        jButton2.setBorder(null);
-        jButton2.setIconTextGap(5);
-        jButton2.setInheritsPopupMenu(true);
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        Btn_First.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        Btn_First.setIcon(new javax.swing.ImageIcon(getClass().getResource("/javaapplication1/fast-forward-double-left-arrows-symbol.png"))); // NOI18N
+        Btn_First.setText("Primeiro");
+        Btn_First.setAlignmentY(0.0F);
+        Btn_First.setBorder(null);
+        Btn_First.setIconTextGap(5);
+        Btn_First.setInheritsPopupMenu(true);
+        Btn_First.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                Btn_FirstActionPerformed(evt);
             }
         });
 
@@ -395,7 +424,7 @@ public class Main_Window extends javax.swing.JFrame {
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(210, 210, 210)
-                                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(Btn_First, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
                                 .addComponent(jButton7, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
@@ -436,7 +465,7 @@ public class Main_Window extends javax.swing.JFrame {
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel8)
                             .addComponent(txt_quantidade, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
+                        .addGap(30, 30, 30)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel3)
                             .addComponent(txt_preco, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -453,7 +482,7 @@ public class Main_Window extends javax.swing.JFrame {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(Btn_First, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addComponent(jButton7, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addComponent(jButton8, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addComponent(jButton6, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -486,9 +515,10 @@ public class Main_Window extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_txt_quantidadeActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton2ActionPerformed
+    private void Btn_FirstActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Btn_FirstActionPerformed
+        pos = 0;
+        ShowItem(pos);
+    }//GEN-LAST:event_Btn_FirstActionPerformed
 
     private void Btn_atualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Btn_atualizarActionPerformed
         
@@ -512,7 +542,9 @@ public class Main_Window extends javax.swing.JFrame {
                     
                     ps.setInt(5, Integer.parseInt(txt_id.getText()));
                     
-                    ps.executeUpdate();
+                    ps.executeUpdate();                    
+                    Show_Products_In_JTable();
+                    JOptionPane.showMessageDialog(null, "Produto Atualizado");
                 } catch (Exception ex) {
                     Logger.getLogger(Main_Window.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -533,8 +565,10 @@ public class Main_Window extends javax.swing.JFrame {
                     ps.setBlob(5, img);
                     
                     ps.setInt(6, Integer.parseInt(txt_id.getText()));
-                    
+                                        
                     ps.executeUpdate();
+                    Show_Products_In_JTable();
+                    JOptionPane.showMessageDialog(null, "Produto Atualizado");
                 } catch (Exception ex) 
                 {
                     JOptionPane.showMessageDialog(null, ex.getMessage());
@@ -560,6 +594,7 @@ public class Main_Window extends javax.swing.JFrame {
                 int id = Integer.parseInt(txt_id.getText());
                 ps.setInt(1, id);
                 ps.executeUpdate();
+                Show_Products_In_JTable();
                 JOptionPane.showMessageDialog(null, "Produto Deletado com Sucesso");
             } catch (SQLException ex) {
                 Logger.getLogger(Main_Window.class.getName()).log(Level.SEVERE, null, ex);
@@ -573,15 +608,29 @@ public class Main_Window extends javax.swing.JFrame {
     }//GEN-LAST:event_Btn_deletarActionPerformed
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
-        // TODO add your handling code here:
+        pos = getProductList().size()-1;
+        ShowItem(pos);
     }//GEN-LAST:event_jButton6ActionPerformed
 
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
-        // TODO add your handling code here:
+        pos++;
+        
+        if(pos >= getProductList().size())
+        {
+                pos = getProductList().size()-1;
+        }    
+        ShowItem(pos);
     }//GEN-LAST:event_jButton7ActionPerformed
 
     private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
-        // TODO add your handling code here:
+        pos--;
+        
+        if(pos < 0)
+        {
+            pos = 0;
+        }
+        
+        ShowItem(pos);
     }//GEN-LAST:event_jButton8ActionPerformed
 
     private void txt_idActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_idActionPerformed
@@ -634,10 +683,10 @@ public class Main_Window extends javax.swing.JFrame {
                 ps.setString(5, txt_preco.getText());
                 
                 InputStream img = new FileInputStream(new File(ImgPath));
-                ps.setBlob(6, img);
-                ps.executeUpdate();
-                Show_Products_In_JTable();
+                ps.setBlob(6, img);  
                 
+                ps.executeUpdate();
+                Show_Products_In_JTable();                
                 JOptionPane.showMessageDialog(null, "Dados Inseridos");
             } catch (HeadlessException | FileNotFoundException | SQLException ex) {
                 JOptionPane.showMessageDialog(null, ex.getMessage());
@@ -646,6 +695,13 @@ public class Main_Window extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Preencha todos os campos");
         }
     }//GEN-LAST:event_Btn_inserirActionPerformed
+
+    private void JTable_ProductsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_JTable_ProductsMouseClicked
+       
+        int index = JTable_Products.getSelectedRow();
+        ShowItem(index);
+                
+    }//GEN-LAST:event_JTable_ProductsMouseClicked
 
     /**
      * @param args the command line arguments
@@ -683,13 +739,13 @@ public class Main_Window extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton Btn_First;
     private javax.swing.JButton Btn_atualizar;
     private javax.swing.JButton Btn_deletar;
     private javax.swing.JButton Btn_inserir;
     private javax.swing.JTable JTable_Products;
     private javax.swing.JLabel bl_image;
     private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton6;
     private javax.swing.JButton jButton7;
     private javax.swing.JButton jButton8;
