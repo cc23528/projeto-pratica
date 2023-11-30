@@ -32,6 +32,14 @@ const Fornecedor = bd.sequelize.define('fornecedor', {
   }
 );
 
+// Sincronize o modelo com o banco de dados
+bd.sequelize.sync()
+  .then(() => {
+    console.log('Tabela Fornecedor sincronizada com sucesso');
+  })
+  .catch((error) => {
+    console.error('Erro ao sincronizar a tabela Fornecedor:', error);
+  });
 
 
 
