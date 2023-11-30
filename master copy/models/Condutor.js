@@ -27,5 +27,13 @@ const Condutor = bd.sequelize.define('condutor', {
   }
 });
 
+bd.sequelize.sync()
+  .then(() => {
+    console.log('Tabela Funcionario sincronizada com sucesso');
+  })
+  .catch((error) => {
+    console.error('Erro ao sincronizar a tabela Funcionario:', error);
+  });
+  
 module.exports = Condutor;
 

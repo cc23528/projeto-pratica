@@ -1,0 +1,26 @@
+<h2>lista de Produtos: </h2>
+<hr>
+<a href="/admin/produto/add">
+    <button class="btn btn-success">Novo Produto</button>
+</a>
+
+{{#each produto}}
+    <div class="card mt-4">
+        <div class="card-body">
+            <h4>ID: {{id_produto}}</h4>
+            <small>Descricao : {{descricao}}</small>
+            <br>
+            <small>Preço : {{preco}}</small>
+            <br>
+            <small>Quantidade: {{quantidade}}</small>
+            <br>
+            <a href="/admin/produto/edit/{{id}}"><button class="btn btn-success mt-4">Editar Produto</button></a>
+            <form action="/admin/produto/deletar" method="POST">
+                <input type="hidden" name="id" value="{{id}}">
+                <button type="submit" class="btn btn-danger mt-3">Remover Produto</button>
+            </form>
+        </div>
+    </div>
+{{else}}
+    <h4 class="mt-4">Nenhum Produto registrado</h4>
+{{/each}}

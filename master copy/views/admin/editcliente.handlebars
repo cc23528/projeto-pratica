@@ -1,0 +1,35 @@
+    {{#each erros}}
+        <div class="alert alert-danger">{{texto}}</div>
+    {{else}}
+
+    {{/each}}
+    
+    <h3>editar cliente: </h3>
+    <div class="card">
+        <div class="card-body">
+            <form action="/admin/cliente/edit" method="POST">
+            <input type="hidden" name="id" value="{{cliente.id}}">
+
+
+                <label for="nome_cliente">Nome: </label>
+                <input type="text" name="nome_cliente" id="nome_cliente" placeholder="nome" class="form-control" value="{{cliente.nome_cliente}}">
+
+                <label for="cpf_cliente">Cpf: </label>
+                <input type="text" name="cpf_cliente" id="cpf_cliente" placeholder="cpf" class="form-control" value="{{cliente.cpf_cliente}}">
+
+                <label for="telefone_cliente">Telefone: </label>
+                <input type="text" name="telefone_cliente" id="telefone_cliente" placeholder="telefone" class="form-control" value="{{cliente.telefone_cliente}}">
+
+                <label for="endereco_cliente">Endereço: </label>
+                <input type="text" name="endereco_cliente" id="endereco_cliente" placeholder="endereço" class="form-control" value="{{cliente.endereco_cliente}}">
+
+                <label for="nome_estabelecimento">Estabelecimento: </label>
+                <input type="text" name="nome_estabelecimento" id="nome_estabelecimento" placeholder="estabelecimento" class="form-control" value="{{cliente.nome_estabelecimento}}">
+
+
+                <button type="submit" class="btn btn-success">editar cliente</button>
+            </form>
+        </div>
+    </div>
+    
+

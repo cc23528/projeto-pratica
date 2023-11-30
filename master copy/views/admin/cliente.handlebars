@@ -1,0 +1,45 @@
+<h2>lista de Clientes: </h2>
+<hr>
+<a href="/admin/cliente/add">
+    <button class="btn btn-success">Novo Cliente</button>
+</a>
+
+<div class="card mt-4">
+    <table class="table">
+            <thead class="thead-dark">
+                <tr>
+                <th scope="col">#</th>
+                <th scope="col">Nome</th>
+                <th scope="col">Cpf</th>
+                <th scope="col">Telefone</th>
+                <th scope="col">Endereço</th>
+                <th scope="col">Nome do estabelecimento</th>
+                <th scope="col">data</th>
+                <th scope="col">edit</th>
+                </tr>
+        </thead>
+
+    {{#each cliente}}
+        <tr>
+            <th scope="row">{{@index}}</th>
+            <td>{{nome_cliente}}</td>
+            <td>{{cpf_cliente}}</td>
+            <td>{{telefone_cliente}}</td>
+            <td>{{endereco_cliente}}</td>
+            <td>{{nome_estabelecimento}}</td>
+            <td>{{date}}</td>
+            <td>
+                <a href="/admin/cliente/edit/{{id}}"><button class="btn btn-success mt-1">Editar cliente</button></a>
+                
+                <form action="/admin/cliente/deletar" method="POST">
+                    <input type="hidden" name="id" value="{{id}}">
+                    <button type="submit" class="btn btn-danger mt-1">Remover cliente</button>
+                </form>
+            </td>
+            
+        </tr>
+        
+    {{else}}
+        <h4 class="mt-4">Nenhum cliente registrado</h4>
+    {{/each}}
+</div>

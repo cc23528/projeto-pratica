@@ -4,6 +4,10 @@ const path = require('path');
 const Funcionario = require('../models/Funcionario');
 const Condutor = require('../models/Condutor')
 const Veiculo = require('../models/Veiculo')
+const Cliente = require('../models/Cliente')
+const Fornecedor = require('../models/Fornecedor')
+const Produto = require('../models/Produto')
+
 
 router.get('/', (req, res) => {
   res.render('admin/home');
@@ -386,4 +390,474 @@ router.post('/veiculo/deletar', async (req, res) => {
   }
 });
 
+
+
+
+
+
+
+
+router.get('/cliente', async (req, res) => {
+  try {
+    const cliente = await Cliente.findAll({ order: [['date', 'DESC']], raw: true });
+    res.render('admin/cliente', { cliente: cliente });
+    console.log("deu certo")
+  } catch (err) {
+    req.flash('error-msg', 'Houve um erro ao listar os clientes');
+    res.redirect('/admin');
+    console.log("deu erro" + err)
+  }
+});
+
+router.get('/cliente/add', (req, res) => {
+  res.render('admin/addcliente');
+});
+
+router.post('/cliente/novo', async (req, res) => {
+  try {
+    let erros = [];
+
+    if(req.body.nome_cliente.length < 4){
+      if(!req.body.nome_cliente || typeof req.body.nome_cliente == undefined || req.body.nome_cliente == null){
+        erros.push({texto: "Nome invalido"})
+      }else{
+      erros.push({texto: "Nome do Cliente muito pequeno"})
+      }
+    }
+  
+    if(req.body.cpf_cliente.length < 11){
+      if(!req.body.cpf_cliente || typeof req.body.cpf_cliente == undefined || req.body.cpf_cliente == null){
+        erros.push({texto: "Cpf invalido"})
+      }else{
+        erros.push({texto: "Cpf do Cliente muito pequeno"})
+      }
+    }
+  
+    if(req.body.telefone_cliente.length < 8){
+      if(!req.body.telefone_cliente || typeof req.body.telefone_cliente == undefined || req.body.telefone_cliente == null){
+        erros.push({texto: "Telefone invalido"})
+      }else{
+        erros.push({texto: "Telefone do cliente muito pequeno"})
+      }
+    }
+  
+    if(!req.body.endereco_cliente || typeof req.body.endereco_cliente == undefined || req.body.endereco_cliente == null){
+      erros.push({texto: "Endereço de nascimento invalido"})
+    }
+
+    if(!req.body.nome_estabelecimento || typeof req.body.nome_estabelecimento == undefined || req.body.nome_estabelecimento == null){
+      erros.push({texto: "Estabelecimento de nascimento invalido"})
+    }
+
+    if (erros.length > 0) {
+      res.render('admin/addcliente', { erros: erros });
+    } else {
+      const novoCliente = {
+        nome_cliente: req.body.nome_cliente,
+        cpf_cliente: req.body.cpf_cliente,
+        telefone_cliente: req.body.telefone_cliente,
+        endereco_cliente: req.body.endereco_cliente,
+        nome_estabelecimento: req.body.nome_estabelecimento,
+      };
+      
+
+      await Cliente.create(novoCliente);
+      req.flash('success_msg', 'Funcionário criado com sucesso!');
+      res.redirect('/admin/cliente');
+      console.log("deu certo")
+    }
+  } catch (err) {
+    req.flash('error_msg', 'Houve um erro ao salvar o funcionário, tente novamente!');
+    res.redirect('/admin');
+    console.log("deu erro " + err)
+  }
+});
+
+router.get('/cliente/edit/:id', async (req, res) => {
+  try {
+    const cliente = await Cliente.findByPk(req.params.id, { raw: true });
+    res.render('admin/editcliente', { cliente: cliente });
+  } catch (erro) {
+    req.flash('error_msg', 'Este Funcionário não existe');
+    res.redirect('/admin/cliente');
+  }
+});
+
+router.post('/cliente/edit', async (req, res) => {
+  try {
+    let erros = [];
+
+    if(req.body.nome_cliente.length < 4){
+      if(!req.body.nome_cliente || typeof req.body.nome_cliente == undefined || req.body.nome_cliente == null){
+        erros.push({texto: "Nome invalido"})
+      }else{
+      erros.push({texto: "Nome do Cliente muito pequeno"})
+      }
+    }
+  
+    if(req.body.cpf_cliente.length < 11){
+      if(!req.body.cpf_cliente || typeof req.body.cpf_cliente == undefined || req.body.cpf_cliente == null){
+        erros.push({texto: "Cpf invalido"})
+      }else{
+        erros.push({texto: "Cpf do Cliente muito pequeno"})
+      }
+    }
+  
+    if(req.body.telefone_cliente.length < 8){
+      if(!req.body.telefone_cliente || typeof req.body.telefone_cliente == undefined || req.body.telefone_cliente == null){
+        erros.push({texto: "Telefone invalido"})
+      }else{
+        erros.push({texto: "Telefone do cliente muito pequeno"})
+      }
+    }
+  
+    if(!req.body.endereco_cliente || typeof req.body.endereco_cliente == undefined || req.body.endereco_cliente == null){
+      erros.push({texto: "Endereço de nascimento invalido"})
+    }
+
+    if(!req.body.nome_estabelecimento || typeof req.body.nome_estabelecimento == undefined || req.body.nome_estabelecimento == null){
+      erros.push({texto: "Estabelecimento de nascimento invalido"})
+    }
+
+    if (erros.length > 0) {
+      res.render('admin/cliente', { erros: erros });
+    } else {
+      const cliente = await Cliente.findByPk(req.body.id);
+
+      cliente.nome_cliente = req.body.nome_cliente;
+      cliente.cpf_cliente = req.body.cpf_cliente;
+      cliente.telefone_cliente = req.body.telefone_cliente;
+      cliente.endereco_cliente = req.body.endereco_cliente;
+      cliente.nome_estabelecimento = req.body.nome_estabelecimento;
+
+
+      await cliente.save();
+      req.flash('success_msg', 'Funcionário editado com sucesso!');
+      res.redirect('/admin/cliente');
+    }
+  } catch (err) {
+    req.flash('error_msg', 'Houve um erro ao editar o funcionário');
+    res.redirect('/admin/cliente');
+  }
+});
+
+router.post('/cliente/deletar', async (req, res) => {
+  try {
+    await Cliente.destroy({ where: { id: req.body.id } });
+    req.flash('success_msg', 'Funcionário deletado com sucesso!!!');
+    res.redirect('/admin/cliente');
+  } catch (err) {
+    req.flash('error_msg', 'Houve um erro ao deletar o Funcionário' + err);
+    res.redirect('/admin/cliente');
+  }
+});
+
+
+
+
+
+
+
+
+router.get('/fornecedor', async (req, res) => {
+  try {
+    const fornecedor = await Fornecedor.findAll({ order: [['date', 'DESC']], raw: true });
+    res.render('admin/fornecedor', { fornecedor: fornecedor });
+    console.log("deu certo")
+  } catch (err) {
+    req.flash('error-msg', 'Houve um erro ao listar os fornecedores');
+    res.redirect('/admin');
+    console.log("deu erro "+ err)
+  }
+});
+
+router.get('/fornecedor/add', (req, res) => {
+  res.render('admin/addfornecedor');
+});
+
+router.post('/fornecedor/novo', async (req, res) => {
+  try {
+    let erros = [];
+
+    if(req.body.id_fornecedor.length < 1){
+      if(!req.body.id_fornecedor || typeof req.body.id_fornecedor == undefined || req.body.id_fornecedor == null){
+        erros.push({texto: "ID invalido"})
+      }else{
+      erros.push({texto: "ID invalido"})
+      }
+    }
+  
+    if(req.body.nome_fornecedor.length < 3){
+      if(!req.body.nome_fornecedor || typeof req.body.nome_fornecedor == undefined || req.body.nome_fornecedor == null){
+        erros.push({texto: "Nome invalido"})
+      }else{
+        erros.push({texto: "Nome do fornecedor muito pequeno"})
+      }
+    }
+  
+  
+      if(!req.body.endereco || typeof req.body.endereco == undefined || req.body.endereco == null){
+        erros.push({texto: "Endereço invalida"})
+      }
+  
+      if(!req.body.telefone || typeof req.body.telefone == undefined || req.body.telefone == null){
+        erros.push({texto: "Telefone invalido"})
+      }
+    
+  
+    if(!req.body.email || typeof req.body.email == undefined || req.body.email == null){
+      erros.push({texto: "Email Invalido"})
+    }
+
+    if (erros.length > 0) {
+      res.render('admin/addfornecedor', { erros: erros });
+      console.log("deu bosta")
+    } else {
+      const novoFornecedor = {
+        id_fornecedor: req.body.id_fornecedor,
+        nome_fornecedor: req.body.nome_fornecedor,
+        endereco: req.body.endereco,
+        telefone: req.body.telefone,
+        email: req.body.email,
+      };
+
+      console.log("ta indo")
+      await Fornecedor.create(novoFornecedor);
+      console.log("ta indo 22")
+      req.flash('success_msg', 'Fornecedor criado com sucesso!');
+      res.redirect('/admin/fornecedor');
+      console.log("funcionou")
+    }
+    } catch (err) {
+      req.flash('error_msg', 'Houve um erro ao salvar o Fornecedor, tente novamente!');
+      res.redirect('/admin');
+      console.log("deu erro " + err)
+    }
+  });
+
+
+  router.get('/fornecedor/edit/:id', async (req, res) => {
+    try {
+      const fornecedor = await Fornecedor.findByPk(req.params.id, { raw: true });
+      res.render('admin/editfornecedor', { fornecedor: fornecedor });
+    } catch (erro) {
+      req.flash('error_msg', 'Este Funcionário não existe');
+      res.redirect('/admin/fornecedor');
+    }
+  });
+  
+  router.post('/fornecedor/edit', async (req, res) => {
+    try {
+      let erros = [];
+  
+      if(req.body.id_fornecedor.length < 1){
+        if(!req.body.id_fornecedor || typeof req.body.id_fornecedor == undefined || req.body.id_fornecedor == null){
+          erros.push({texto: "ID invalido"})
+        }else{
+        erros.push({texto: "ID invalido"})
+        }
+      }
+    
+      if(req.body.nome_fornecedor.length < 3){
+        if(!req.body.nome_fornecedor || typeof req.body.nome_fornecedor == undefined || req.body.nome_fornecedor == null){
+          erros.push({texto: "Nome invalido"})
+        }else{
+          erros.push({texto: "Nome do fornecedor muito pequeno"})
+        }
+      }
+    
+    
+        if(!req.body.endereco || typeof req.body.endereco == undefined || req.body.endereco == null){
+          erros.push({texto: "Endereço invalida"})
+        }
+    
+        if(!req.body.telefone || typeof req.body.telefone == undefined || req.body.telefone == null){
+          erros.push({texto: "Telefone invalido"})
+        }
+      
+    
+      if(!req.body.email || typeof req.body.email == undefined || req.body.email == null){
+        erros.push({texto: "Email Invalido"})
+      }
+  
+      if (erros.length > 0) {
+        res.render('admin/editfornecedor', { erros: erros });
+      } else {
+        const fornecedor = await Fornecedor.findByPk(req.body.id);
+  
+        fornecedor.id_fornecedor = req.body.id_fornecedor;
+        fornecedor.nome_fornecedor = req.body.nome_fornecedor;
+        fornecedor.endereco = req.body.endereco;
+        fornecedor.telefone = req.body.telefone;
+        fornecedor.email = req.body.email;
+  
+        await fornecedor.save();
+        req.flash('success_msg', 'fornecedor editado com sucesso!');
+        res.redirect('/admin/fornecedor');
+      }
+    } catch (err) {
+      req.flash('error_msg', 'Houve um erro ao editar o fornecedor');
+      res.redirect('/admin/fornecedor');
+    }
+  });
+
+
+  router.post('/fornecedor/deletar', async (req, res) => {
+    try {
+      await Fornecedor.destroy({ where: { id: req.body.id } });
+      req.flash('success_msg', 'fornecedor deletado com sucesso!!!');
+      res.redirect('/admin/fornecedor');
+    } catch (err) {
+      req.flash('error_msg', 'Houve um erro ao deletar o fornecedor' + err);
+      res.redirect('/admin/fornecedor');
+    }
+  });
+
+
+
+  router.get('/produto', async (req, res) => {
+    try {
+      const produto = await Produto.findAll({ order: [['date', 'DESC']], raw: true });
+      res.render('admin/produto', { produto: produto });
+      console.log("deu certo")
+    } catch (err) {
+      req.flash('error-msg', 'Houve um erro ao listar os produtos');
+      res.redirect('/admin');
+      console.log("deu erro "+ err)
+    }
+  });
+  
+  router.get('/produto/add', (req, res) => {
+    res.render('admin/addproduto');
+  });
+  
+  
+  
+  router.post('/produto/novo', async (req, res) => {
+    try {
+      let erros = [];
+  
+      if(req.body.id_produto.length < 1){
+        if(!req.body.id_produto || typeof req.body.id_produto == undefined || req.body.id_produto == null){
+          erros.push({texto: "ID invalido"})
+        }else{
+        erros.push({texto: "ID invalido"})
+        }
+      }
+    
+      if(req.body.descricao.length < 3){
+        if(!req.body.descricao || typeof req.body.descricao == undefined || req.body.descricao == null){
+          erros.push({texto: "Nome invalido"})
+        }else{
+          erros.push({texto: "Nome do fornecedor muito pequeno"})
+        }
+      }
+    
+    
+        if(!req.body.preco || typeof req.body.preco == undefined || req.body.preco == null){
+          erros.push({texto: "Endereço invalida"})
+        }
+    
+        if(!req.body.quantidade || typeof req.body.quantidade == undefined || req.body.quantidade == null){
+          erros.push({texto: "Telefone invalido"})
+        }
+      
+  
+      if (erros.length > 0) {
+        res.render('admin/addproduto', { erros: erros });
+        console.log("deu bosta")
+      } else {
+        const novoProduto = {
+          id_produto: req.body.id_produto,
+          descricao: req.body.descricao,
+          preco: req.body.preco,
+          quantidade: req.body.quantidade,
+        };
+        await Produto.create(novoProduto);
+        req.flash('success_msg', 'PRODUTO criado com sucesso!');
+        res.redirect('/admin/produto');
+        console.log("funcionou")
+      }
+      } catch (err) {
+        req.flash('error_msg', 'Houve um erro ao salvar o Produto, tente novamente!');
+        res.redirect('/admin');
+        console.log("deu erro " + err)
+      }
+    });
+  
+
+    router.get('/produto/edit/:id', async (req, res) => {
+      try {
+        const produto = await Produto.findByPk(req.params.id, { raw: true });
+        res.render('admin/editproduto', { produto: produto });
+      } catch (erro) {
+        req.flash('error_msg', 'Este produto não existe');
+        res.redirect('/admin/produto');
+      }
+    });
+    
+    router.post('/produto/edit', async (req, res) => {
+      try {
+        let erros = [];
+    
+        if(req.body.id_produto.length < 1){
+          if(!req.body.id_produto || typeof req.body.id_produto == undefined || req.body.id_produto == null){
+            erros.push({texto: "ID invalido"})
+          }else{
+          erros.push({texto: "ID invalido"})
+          }
+        }
+      
+        if(req.body.descricao.length < 3){
+          if(!req.body.descricao || typeof req.body.descricao == undefined || req.body.descricao == null){
+            erros.push({texto: "Descrição invalido"})
+          }else{
+            erros.push({texto: "Descrição muito pequeno"})
+          }
+        }
+      
+      
+          if(!req.body.preco || typeof req.body.preco == undefined || req.body.preco == null){
+            erros.push({texto: "Preço invalido"})
+          }
+      
+          if(!req.body.quantidade || typeof req.body.quantidade == undefined || req.body.quantidade == null){
+            erros.push({texto: "Quantidade invalida"})
+          }
+    
+        if (erros.length > 0) {
+          res.render('admin/editproduto', { erros: erros });
+        } else {
+          const produto = await Produto.findByPk(req.body.id);
+    
+          produto.id_produto = req.body.id_produto;
+          produto.descricao = req.body.descricao;
+          produto.preco = req.body.preco;
+          produto.quantidade = req.body.quantidade;
+    
+          await produto.save();
+          req.flash('success_msg', 'produto editado com sucesso!');
+          res.redirect('/admin/produto');
+        }
+      } catch (err) {
+        req.flash('error_msg', 'Houve um erro ao editar o produto');
+        res.redirect('/admin/produto');
+      }
+    });
+
+    router.post('/produto/deletar', async (req, res) => {
+      try {
+        await Produto.destroy({ where: { id: req.body.id } });
+        req.flash('success_msg', 'produto deletado com sucesso!!!');
+        res.redirect('/admin/produto');
+      } catch (err) {
+        req.flash('error_msg', 'Houve um erro ao deletar o produto' + err);
+        res.redirect('/admin/produto');
+      }
+    });
+  
+
+
+
+  
 module.exports = router;

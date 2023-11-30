@@ -1,0 +1,45 @@
+<h2>lista de fornecedores: </h2>
+<hr>
+<a href="/admin/fornecedor/add">
+    <button class="btn btn-success">Novo Fornecedor</button>
+</a>
+
+<div class="card mt-4">
+    <table class="table">
+            <thead class="thead-dark">
+                <tr>
+                <th scope="col">#</th>
+                <th scope="col">ID</th>
+                <th scope="col">Nome</th>
+                <th scope="col">Endereço</th>
+                <th scope="col">Telefone</th>
+                <th scope="col">Email</th>
+                <th scope="col">Data</th>
+                <th scope="col">edit</th>
+                </tr>
+        </thead>
+
+    {{#each fornecedor}}
+        <tr>
+            <th scope="row">{{@index}}</th>
+            <td>{{id_fornecedor}}</td>
+            <td>{{nome_fornecedor}}</td>
+            <td>{{endereco}}</td>
+            <td>{{telefone}}</td>
+            <td>{{email}}</td>
+            <td>{{date}}</td>
+            <td>
+                <a href="/admin/fornecedor/edit/{{id}}"><button class="btn btn-success mt-1">Editar fornecedor</button></a>
+                
+                <form action="/admin/fornecedor/deletar" method="POST">
+                    <input type="hidden" name="id" value="{{id}}">
+                    <button type="submit" class="btn btn-danger mt-1">Remover fornecedor</button>
+                </form>
+            </td>
+            
+        </tr>
+        
+    {{else}}
+        <h4 class="mt-4">Nenhuma fornecedor registrado</h4>
+    {{/each}}
+</div>
