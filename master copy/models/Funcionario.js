@@ -24,13 +24,4 @@ const Funcionario = bd.sequelize.define('funcionario', {
   }
 });
 
-// Sincronize o modelo com o banco de dados
-bd.sequelize.sync()
-  .then(() => {
-    console.log('Tabela Funcionario sincronizada com sucesso');
-  })
-  .catch((error) => {
-    console.error('Erro ao sincronizar a tabela Funcionario:', error);
-  });
-
 module.exports = Funcionario;

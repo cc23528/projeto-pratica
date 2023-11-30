@@ -28,13 +28,5 @@ const Produto = bd.sequelize.define('produto', {
 }
 );
 
-// Sincronize o modelo com o banco de dados
-bd.sequelize.sync()
-  .then(() => {
-    console.log('Tabela Produto sincronizada com sucesso');
-  })
-  .catch((error) => {
-    console.error('Erro ao sincronizar a tabela Produto:', error);
-  });
 
 module.exports = Produto;

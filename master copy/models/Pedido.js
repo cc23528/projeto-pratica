@@ -36,13 +36,4 @@ const Pedido = bd.sequelize.define('pedido', {
   }
 });
 
-// Sincronize o modelo com o banco de dados
-bd.sequelize.sync()
-  .then(() => {
-    console.log('Tabela Pedido sincronizada com sucesso');
-  })
-  .catch((error) => {
-    console.error('Erro ao pedido a tabela cliente:', error);
-  });
-
 module.exports = Pedido;

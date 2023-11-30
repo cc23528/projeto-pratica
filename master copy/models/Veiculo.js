@@ -23,12 +23,4 @@ const Veiculo = bd.sequelize.define('veiculo', {
   }
 });
 
-bd.sequelize.sync()
-  .then(() => {
-    console.log('Tabela Funcionario sincronizada com sucesso');
-  })
-  .catch((error) => {
-    console.error('Erro ao sincronizar a tabela Funcionario:', error);
-  });
-  
 module.exports = Veiculo;
