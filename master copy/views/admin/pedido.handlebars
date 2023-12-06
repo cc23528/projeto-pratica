@@ -1,0 +1,26 @@
+<h2>lista de pedido: </h2>
+<hr>
+<a href="/admin/pedido/add">
+    <button class="btn btn-success">Novo pedido</button>
+</a>
+
+{{#each pedido}}
+    <div class="card mt-4">
+        <div class="card-body">
+            <h4>Placa: {{placa}}</h4>
+            <small>Condutor : {{nome_condutor}}</small>
+            <br>
+            <small>CPF do condutor : {{cpf}}</small>
+            <br>
+            <small>Medida: {{medida}}</small>
+            <br>
+            <a href="/admin/pedido/edit/{{id}}"><button class="btn btn-success mt-4">Editar pedido</button></a>
+            <form action="/admin/pedido/deletar" method="POST">
+                <input type="hidden" name="id" value="{{id}}">
+                <button type="submit" class="btn btn-danger mt-3">deleta pedido</button>
+            </form>
+        </div>
+    </div>
+{{else}}
+    <h4 class="mt-4">Nenhum Condutor registrado</h4>
+{{/each}}

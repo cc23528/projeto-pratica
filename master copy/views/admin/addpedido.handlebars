@@ -1,0 +1,96 @@
+{{#each erros}}
+    <div class="alert alert-danger">{{texto}}</div>
+{{else}}
+{{/each}}
+
+<h3>Novo Pedido: </h3>
+<div class="card">
+    <div class="card-body">
+        <form action="/admin/pedido/novo" method="POST">
+            <label for="dia">Dia: </label>
+            <input type="date" name="dia" id="dia" class="form-control">
+
+            <label for="situacao">Situação: </label>
+            <input type="text" name="situacao" id="situacao" placeholder="Situação do pedido" class="form-control">
+
+            <label for="produto">Produto: </label>
+            <select name="produto" id="produto" class="form-control">
+                <option value="">Selecione um produto</option>
+                {{#each produtos}}
+                    <option value="{{id_produto}}">{{nome_produto}}</option>
+                {{/each}}
+            </select>
+
+            <label for="veiculo">Veículo: </label>
+            <select name="veiculo" id="veiculo" class="form-control">
+                <option value="">Selecione um veículo</option>
+                {{#each veiculos}}
+                    <option value="{{placa}}">
+                        {{placa}} - Condutor: {{#with (lookup veiculos condutor) }}{{nome_condutor}} (CPF: {{cpf}}){{/with}}
+                    </option>
+                {{/each}}
+            </select>
+
+            <label for="funcionario">Funcionário: </label>
+            <select name="funcionario" id="funcionario" class="form-control">
+                <option value="">Selecione um funcionário</option>
+                {{#each funcionarios}}
+                    <option value="{{cpf}}">{{nome}}</option>
+                {{/each}}
+            </select>
+
+            <label for="cliente">Cliente: </label>
+            <select name="cliente" id="cliente" class="form-control">
+                <option value="">Selecione um cliente</option>
+                {{#each clientes}}
+                    <option value="{{cpf_cliente}}">{{nome_cliente}}</option>
+                {{/each}}
+            </select>
+
+
+            <label for="dia_retirada_entrega">Dia Retirada/Entrega: </label>
+            <input type="date" name="dia_retirada_entrega" id="dia_retirada_entrega" class="form-control">
+
+            <button type="submit" class="btn btn-success mt-4">Adicionar Pedido</button>
+        </form>
+    </div>
+</div>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Dia</th>
+            <th scope="col">Situação</th>
+            <th scope="col">Produto</th>
+            <th scope="col">Veículo</th>
+            <th scope="col">Funcionário</th>
+            <th scope="col">Cliente</th>
+            <th scope="col">Dia Retirada/Entrega</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {{#each pedidos}}
+            <tr>
+                <th scope="row">{{@index}}</th>
+                <td>{{dia}}</td>
+                <td>{{situacao}}</td>
+                <td>{{#with (lookup produtos produto) }}{{nome_produto}}{{/with}}</td>
+                <td>{{veiculo.placa}}</td>
+                <td>{{funcionario.nome}}</td>
+                <td>{{cliente.nome_cliente}}</td>
+                <td>{{dia_retirada_entrega}}</td>
+            </tr>
+        {{else}}
+            <h4 class="mt-4">Nenhum Pedido registrado</h4>
+        {{/each}}
+    </tbody>
+</table>
+
+<script>
+    // Função para atualizar campos dinamicamente, se necessário
+    function updateFields() {
+        // Implemente conforme necessário
+    }
+</script>

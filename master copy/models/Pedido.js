@@ -1,48 +1,51 @@
 const bd = require ('./bd');
 
-const Pedido = bd.sequelize.define('pedido', {
+const Pedido = bd.sequelize.define('Pedido', {
   id_pedido: {
-    type:  bd.Sequelize.NUMBER,
-    allowNull: false
-  },
-  situacao: {
-    type:  bd.Sequelize.STRING,
-    allowNull: false,
-    unique: true
-  },
-  id_produto: {
-    type:  bd.Sequelize.NUMBER,
-    allowNull: false
-  },
-  cpf: {
-    type:  bd.Sequelize.NUMBER,
-    allowNull: false
-  },
-  cpf_cliente: {
-    type:  bd.Sequelize.NUMBER,
-    allowNull: false
-  },
-  dia_retirada_entrega: {
-    type:  bd.Sequelize.DATE,
-    allowNull: false
+    type: bd.Sequelize.INTEGER,
+    primaryKey: true,
+    autoIncrement: true,
   },
   dia: {
-    type:  bd.Sequelize.DATE,
-    allowNull: false
+    type: bd.Sequelize.DATE,
+    allowNull: false,
   },
-  date: {
-    type:  bd.Sequelize.DATE,
-    defaultValue: bd.sequelize.fn('NOW') // Use bd.sequelize.fn para chamar funções SQL, neste caso, NOW()
-  }
+  situacao: {
+    type: bd.Sequelize.STRING,
+    allowNull: false,
+  },
+  id_produto: {
+    type: bd.Sequelize.INTEGER,
+    allowNull: false,
+  },
+  placa_veiculo: {
+    type: bd.Sequelize.STRING,
+    allowNull: false,
+  },
+  cpf_funcionario: {
+    type: bd.Sequelize.STRING,
+    allowNull: false,
+  },
+  cpf_cliente: {
+    type: bd.Sequelize.STRING,
+    allowNull: false,
+  },
+  dia_retirada_entrega: {
+    type: bd.Sequelize.DATE,
+    allowNull: false,
+  },
 });
 
-// Sincronize o modelo com o banco de dados
-bd.sequelize.sync()
-  .then(() => {
-    console.log('Tabela Pedido sincronizada com sucesso');
-  })
-  .catch((error) => {
-    console.error('Erro ao pedido a tabela cliente:', error);
-  });
+// Defina as associações com os outros modelos (Produto, Veiculo, Funcionario, Cliente) conforme necessário
+
+const Produto = require('./Produto'); // Certifique-se de ajustar o caminho conforme a estrutura do seu projeto
+const Veiculo = require('./Veiculo'); // Certifique-se de ajustar o caminho conforme a estrutura do seu projeto
+const Funcionario = require('./Funcionario'); // Certifique-se de ajustar o caminho conforme a estrutura do seu projeto
+const Cliente = require('./Cliente'); // Certifique-se de ajustar o caminho conforme a estrutura do seu projeto
+
+Pedido.belongsTo(Produto, { foreignKey: 'id_produto', as: 'produto' });
+Pedido.belongsTo(Veiculo, { foreignKey: 'placa_veiculo', as: 'veiculo' });
+Pedido.belongsTo(Funcionario, { foreignKey: 'cpf_funcionario', as: 'funcionario' });
+Pedido.belongsTo(Cliente, { foreignKey: 'cpf_cliente', as: 'cliente' });
 
 module.exports = Pedido;

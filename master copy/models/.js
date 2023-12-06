@@ -1,20 +1,24 @@
 const bd = require ('./bd')
 
-const Veiculo = bd.sequelize.define('veiculo', {
-  placa: {
+const Condutor = bd.sequelize.define('condutor', {
+  nome_condutor: {
     type: bd.Sequelize.STRING,
     allowNull: false
   },
-  cpf: {
+  cpf_condutor: {
     type: bd.Sequelize.STRING,
     allowNull: false
   },
-  condutor: {
+  carteira: {
     type: bd.Sequelize.STRING,
     allowNull: false
   },
-  medida: {
+  nacionalidade_condutor: {
     type: bd.Sequelize.STRING,
+    allowNull: false
+  },
+  nascimento_condutor: {
+    type: bd.Sequelize.DATE,
     allowNull: false
   },
   date: {
@@ -22,8 +26,6 @@ const Veiculo = bd.sequelize.define('veiculo', {
     defaultValue: bd.Sequelize.NOW
   }
 });
-
-
 
 bd.sequelize.sync()
   .then(() => {
@@ -33,4 +35,5 @@ bd.sequelize.sync()
     console.error('Erro ao sincronizar a tabela Funcionario:', error);
   });
   
-module.exports = Veiculo;
+module.exports = Condutor;
+

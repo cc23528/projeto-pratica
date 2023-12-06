@@ -7,6 +7,7 @@ const Veiculo = require('../models/Veiculo')
 const Cliente = require('../models/Cliente')
 const Fornecedor = require('../models/Fornecedor')
 const Produto = require('../models/Produto')
+const Pedido = require('../models/Pedido')
 
 
 router.get('/', (req, res) => {
@@ -857,7 +858,125 @@ router.post('/fornecedor/novo', async (req, res) => {
     });
   
 
+    router.get('/pedido', async (req, res) => {
+      try {
+        const [produtos, veiculos, funcionarios, clientes, pedidos] = await Promise.all([
+          Produto.findAll({ raw: true }),
+          Veiculo.findAll({ raw: true }),
+          Funcionario.findAll({ raw: true }),
+          Cliente.findAll({ raw: true }),
+          Pedido.findAll({ raw: true }),
+        ]);
+    
+        res.render('admin/pedido', { produtos, veiculos, funcionarios, clientes, pedidos });
+      } catch (err) {
+        console.error(err);
+        req.flash('error-msg', 'Houve um erro ao listar os pedidos');
+        res.redirect('/admin');
+      }
+    });
+    
+    
+    // Importe os modelos necessários (Produto, Veiculo, Funcionario, Cliente) aqui
+
+    router.get('/pedido/add', async (req, res) => {
+      try {
+        // Busque dados adicionais necessários para preencher os selects
+        const [produtos, veiculos, funcionarios, clientes] = await Promise.all([
+          Produto.findAll(),
+          Veiculo.findAll(),
+          Funcionario.findAll(),
+          Cliente.findAll(),
+        ]);
+    
+        // Renderize a página de adição de pedido com os dados necessários
+        res.render('admin/addpedido', {
+          produtos: produtos,
+          veiculos: veiculos,
+          funcionarios: funcionarios,
+          clientes: clientes,
+        });
+      } catch (err) {
+        console.error(err);
+        req.flash('error-msg', 'Houve um erro ao carregar os dados para adicionar pedido');
+        res.redirect('/admin/pedido');
+      }
+    });
+    
 
 
   
+    // Rota para criar um novo pedido
+router.post('/pedido/novo', async (req, res) => {
+  try {
+    let erros = [];
+
+    // Verificações para o campo "dia"
+    if (!req.body.dia) {
+      erros.push({ texto: "Data do pedido é obrigatória" });
+    }
+
+    // Verificações para o campo "situacao"
+    if (req.body.situacao.length < 2) {
+      erros.push({ texto: "A situação do pedido é muito curta" });
+    }
+
+    // Verificações para o campo "produto"
+    if (!req.body.produto) {
+      erros.push({ texto: "Selecione um produto válido" });
+    }
+
+    // Verificações para o campo "veiculo"
+    if (!req.body.veiculo) {
+      erros.push({ texto: "Selecione um veículo válido" });
+    }
+
+    // Verificações para o campo "funcionario"
+    if (!req.body.funcionario) {
+      erros.push({ texto: "Selecione um funcionário válido" });
+    }
+
+    // Verificações para o campo "cliente"
+    if (!req.body.cliente) {
+      erros.push({ texto: "Selecione um cliente válido" });
+    }
+
+    // Verificações para o campo "dia_retirada_entrega"
+    if (!req.body.dia_retirada_entrega) {
+      erros.push({ texto: "Data de retirada/entrega é obrigatória" });
+    }
+
+    // Se houver erros, renderiza a página com as mensagens de erro
+    if (erros.length > 0) {
+      // Você pode precisar fornecer outras informações necessárias para preencher os selects na página
+      const produtos = await Produto.findAll(); // Substitua por sua lógica de busca de produtos
+      const veiculos = await Veiculo.findAll(); // Substitua por sua lógica de busca de veículos
+      const funcionarios = await Funcionario.findAll(); // Substitua por sua lógica de busca de funcionários
+      const clientes = await Cliente.findAll(); // Substitua por sua lógica de busca de clientes
+
+      res.render('admin/addpedido', { erros: erros, produtos, veiculos, funcionarios, clientes });
+    } else {
+      // Cria um novo pedido se não houver erros
+      const novoPedido = {
+        dia: req.body.dia,
+        situacao: req.body.situacao,
+        id_produto: req.body.produto,
+        placa_veiculo: req.body.veiculo,
+        cpf_funcionario: req.body.funcionario,
+        cpf_cliente: req.body.cliente,
+        dia_retirada_entrega: req.body.dia_retirada_entrega,
+      };
+
+      await Pedido.create(novoPedido);
+      req.flash('success_msg', 'Pedido criado com sucesso!');
+      res.redirect('/admin/pedido');
+    }
+    } catch (err) {
+      console.error(err);
+      req.flash('error_msg', 'Houve um erro ao criar o pedido, tente novamente!');
+      res.redirect('/admin');
+    }
+  });
+
+
 module.exports = router;
