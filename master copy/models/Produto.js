@@ -9,10 +9,6 @@ const Produto = bd.sequelize.define('produto', {
     type:  bd.Sequelize.STRING,
     allowNull: false
   },
-  preco: {
-    type:  bd.Sequelize.FLOAT,
-    allowNull: false
-  },
   quantidade: {
     type:  bd.Sequelize.INTEGER,
     allowNull: false

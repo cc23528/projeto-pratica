@@ -36,16 +36,6 @@ const Pedido = bd.sequelize.define('Pedido', {
   },
 });
 
-// Defina as associações com os outros modelos (Produto, Veiculo, Funcionario, Cliente) conforme necessário
 
-const Produto = require('./Produto'); // Certifique-se de ajustar o caminho conforme a estrutura do seu projeto
-const Veiculo = require('./Veiculo'); // Certifique-se de ajustar o caminho conforme a estrutura do seu projeto
-const Funcionario = require('./Funcionario'); // Certifique-se de ajustar o caminho conforme a estrutura do seu projeto
-const Cliente = require('./Cliente'); // Certifique-se de ajustar o caminho conforme a estrutura do seu projeto
-
-Pedido.belongsTo(Produto, { foreignKey: 'id_produto', as: 'produto' });
-Pedido.belongsTo(Veiculo, { foreignKey: 'placa_veiculo', as: 'veiculo' });
-Pedido.belongsTo(Funcionario, { foreignKey: 'cpf_funcionario', as: 'funcionario' });
-Pedido.belongsTo(Cliente, { foreignKey: 'cpf_cliente', as: 'cliente' });
 
 module.exports = Pedido;

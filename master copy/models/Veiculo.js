@@ -3,6 +3,7 @@ const bd = require ('./bd')
 const Veiculo = bd.sequelize.define('veiculo', {
   placa: {
     type: bd.Sequelize.STRING,
+    primaryKey: true,
     allowNull: false
   },
   cpf: {

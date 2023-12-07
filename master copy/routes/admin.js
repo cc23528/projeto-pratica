@@ -8,7 +8,7 @@ const Cliente = require('../models/Cliente')
 const Fornecedor = require('../models/Fornecedor')
 const Produto = require('../models/Produto')
 const Pedido = require('../models/Pedido')
-
+const Bebida = require('../models/Bebida')
 
 router.get('/', (req, res) => {
   res.render('admin/home');
@@ -718,19 +718,39 @@ router.post('/fornecedor/novo', async (req, res) => {
 
   router.get('/produto', async (req, res) => {
     try {
-      const produto = await Produto.findAll({ order: [['date', 'DESC']], raw: true });
-      res.render('admin/produto', { produto: produto });
-      console.log("deu certo")
+        const produtos = await Produto.findAll({ order: [['date', 'DESC']], raw: true });
+        console.log(produtos); // Adicione esta linha para verificar os dados
+
+        res.render('admin/produto', { produto: produtos });
+        console.log("deu certo");
     } catch (err) {
-      req.flash('error-msg', 'Houve um erro ao listar os produtos');
-      res.redirect('/admin');
-      console.log("deu erro "+ err)
+        req.flash('error-msg', 'Houve um erro ao listar os produtos');
+        res.redirect('/admin');
+        console.log("deu erro " + err);
     }
-  });
+});
+
   
-  router.get('/produto/add', (req, res) => {
-    res.render('admin/addproduto');
-  });
+  router.get('/produto/add', async (req, res) => {
+    try {
+        // Buscar todas as bebidas da tabela Bebida
+        const bebidas = await Bebida.findAll({
+          attributes: ['id_bebida'],
+          raw: true, // Para obter resultados simples de objetos em vez de instâncias do Sequelize
+      });
+      
+        console.log(bebidas);  // Adicione este log para verificar os dados
+
+        // Renderizar a página, passando as bebidas como variável
+        res.render('admin/addproduto', { bebidas });
+
+    } catch (error) {
+        // Tratar erros, por exemplo, redirecionando para uma página de erro
+        res.render('admin/produto', { error });
+        console.log("erro " + error);
+    }
+});
+
   
   
   
@@ -738,51 +758,37 @@ router.post('/fornecedor/novo', async (req, res) => {
     try {
       let erros = [];
   
-      if(req.body.id_produto.length < 1){
-        if(!req.body.id_produto || typeof req.body.id_produto == undefined || req.body.id_produto == null){
-          erros.push({texto: "ID invalido"})
-        }else{
-        erros.push({texto: "ID invalido"})
-        }
+      if (!req.body.id_produto || isNaN(parseInt(req.body.id_produto))) {
+        erros.push({ texto: "ID do produto inválido" });
       }
-    
-      if(req.body.descricao.length < 3){
-        if(!req.body.descricao || typeof req.body.descricao == undefined || req.body.descricao == null){
-          erros.push({texto: "Nome invalido"})
-        }else{
-          erros.push({texto: "Nome do fornecedor muito pequeno"})
-        }
-      }
-    
-    
-        if(!req.body.preco || typeof req.body.preco == undefined || req.body.preco == null){
-          erros.push({texto: "Endereço invalida"})
-        }
-    
-        if(!req.body.quantidade || typeof req.body.quantidade == undefined || req.body.quantidade == null){
-          erros.push({texto: "Telefone invalido"})
-        }
       
+      if (!req.body.descricao || req.body.descricao.length < 3) {
+          erros.push({ texto: "Descrição inválida" });
+      }
+      
+      if (!req.body.quantidade || isNaN(parseInt(req.body.quantidade))) {
+          erros.push({ texto: "Quantidade inválida" });
+      }
+    
   
-      if (erros.length > 0) {
-        res.render('admin/addproduto', { erros: erros });
-        console.log("deu bosta")
+        if (erros.length > 0) {
+          res.render('/admin/addproduto', { erros: erros });
+          console.log("deu erro")
       } else {
-        const novoProduto = {
-          id_produto: req.body.id_produto,
-          descricao: req.body.descricao,
-          preco: req.body.preco,
-          quantidade: req.body.quantidade,
-        };
-        await Produto.create(novoProduto);
-        req.flash('success_msg', 'PRODUTO criado com sucesso!');
-        res.redirect('/admin/produto');
-        console.log("funcionou")
+          const novoProduto = {
+              id_produto: req.body.id_produto,
+              descricao: req.body.descricao,
+              quantidade: req.body.quantidade,
+          };
+          await Produto.create(novoProduto);
+          req.flash('success_msg', 'PRODUTO criado com sucesso!');
+          res.redirect('/admin/produto'); // Alterado para redirecionar para a rota de listagem de produtos
+          console.log("funcionou")
       }
       } catch (err) {
         req.flash('error_msg', 'Houve um erro ao salvar o Produto, tente novamente!');
         res.redirect('/admin');
-        console.log("deu erro " + err)
+        console.log("deu erro1 " + err)
       }
     });
   
@@ -817,11 +823,6 @@ router.post('/fornecedor/novo', async (req, res) => {
           }
         }
       
-      
-          if(!req.body.preco || typeof req.body.preco == undefined || req.body.preco == null){
-            erros.push({texto: "Preço invalido"})
-          }
-      
           if(!req.body.quantidade || typeof req.body.quantidade == undefined || req.body.quantidade == null){
             erros.push({texto: "Quantidade invalida"})
           }
@@ -833,7 +834,6 @@ router.post('/fornecedor/novo', async (req, res) => {
     
           produto.id_produto = req.body.id_produto;
           produto.descricao = req.body.descricao;
-          produto.preco = req.body.preco;
           produto.quantidade = req.body.quantidade;
     
           await produto.save();
